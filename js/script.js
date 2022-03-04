@@ -1,16 +1,41 @@
 const url = "http://worldtimeapi.org/api/timezone/";
+const time = document.getElementById("time");
+const timezone = document.getElementById("timezone-continent");
+let boo  = true;
 
-const dropdown = document.getElementById("dropdown");
-dropdown.addEventListener("change", () => {
-  console.log(dropdown.value);
-  worldtimeapiFetch(url + dropdown.value);
-});
+function getAllTimezone(url){
+  return fetch(url).then(response => response.json());
+}
 
-const worldtimeapiFetch = function (url) {
-  fetch(url)
-    .then((res) => res.json())
-    .then((res) => {
-      console.log(res);
+ async function getTime(url){
+
+  let temp = dropdown.value;
+
+  while (time) {
+
+      let json = await getAllTimezone(url);
+      let dateTime = String(json.datetime);
+      time.textContent = dateTime.slice(11, 19);
+      if (dropdown.value !==temp){
+        break;
+      }
+  }
+ }
+
+ async function getTimezones(url){
+  console.log("hej");
+  let json = await getAllTimezone(url);
+   let Offset = String(json.timezone);
+   timezone.textContent = Offset.slice(0,1000);
+ }
+
+ const dropdown = document.getElementById("dropdown");
+dropdown.addEventListener("change", () => getTime(url + dropdown.value));
+dropdown.addEventListener("change", () => getTimezones(url + dropdown.value));
+
+
+
+
       /*{
   "abbreviation": "CET",
   "client_ip": "87.59.14.119",
@@ -31,5 +56,6 @@ const worldtimeapiFetch = function (url) {
 
       /*TODO: lav passende attributter ud fra de markerede JSON værdier som kan manipulerer med klokken  */
       /* Altså vælg tidszone fra drop down, og set uret.
-    });
-};
+       */
+
+
